@@ -1,31 +1,39 @@
 pipeline {
-    agent any
+   agent any
 
-    stages {
-        stage('Hello') {
-            steps {
-             sh(script: 'pytest ./tests/test_sample.py')
-                
-            }
-                 post {
+   stages {
+      stage('Verify Branch') {
+         steps {
+            echo "$GIT_BRANCH"
+         }
+      }
+      stage('Docker Build') {
+         steps {
+            sh(script: 'docker compose build')
+         }
+      }
+      stage('Start App') {
+         steps {
+            sh(script: 'docker compose up -d')
+         }
+      }
+      stage('Run Tests') {
+         steps {
+            sh(script: 'pytest ./tests/test_sample.py')
+         }
+         post {
             success {
                echo "Tests passed! :)"
             }
             failure {
                echo "Tests failed :("
             }
-                 }
-        }
-          stage('Goodbye') {
-            steps {
-                echo 'Goodbye World'
-            }
-        }
-           stage('Ok') {
-            steps {
-                sleep 5
-                echo 'Ok'
-            }
-        }
-    }
+         }
+      }
+   }
+   post {
+      always {
+         sh(script: 'docker compose down')
+      }
+   }
 }

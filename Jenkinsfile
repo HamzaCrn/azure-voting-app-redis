@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                echo 'Hello World'
+             sh(script: 'pytest ./tests/test_sample.py')
             }
         }
           stage('Goodbye') {

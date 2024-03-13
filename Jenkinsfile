@@ -14,6 +14,7 @@ pipeline {
             failure {
                echo "Tests failed :("
             }
+                 }
         }
           stage('Goodbye') {
             steps {

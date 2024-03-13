@@ -2,38 +2,27 @@ pipeline {
    agent any
 
    stages {
-      stage('Verify Branch') {
-         steps {
-            echo "$GIT_BRANCH"
-         }
-      }
-      stage('Docker Build') {
-         steps {
-            sh(script: 'docker compose build')
-         }
-      }
-      stage('Start App') {
-         steps {
-            sh(script: 'docker compose up -d')
-         }
-      }
+
       stage('Run Tests') {
          steps {
             sh(script: 'pytest ./tests/test_sample.py')
          }
-         post {
-            success {
-               echo "Tests passed! :)"
+       stage('Hello') {
+            steps {
+                echo 'Hello World'
             }
-            failure {
-               echo "Tests failed :("
+        }
+          stage('Goodbye') {
+            steps {
+                echo 'Goodbye World'
             }
-         }
-      }
-   }
-   post {
-      always {
-         sh(script: 'docker compose down')
-      }
+        }
+           stage('Ok') {
+            steps {
+                sleep 5
+                echo 'Ok'
+            }
+        }
+}
    }
 }

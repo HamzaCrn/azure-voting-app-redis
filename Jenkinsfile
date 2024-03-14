@@ -2,9 +2,24 @@ pipeline {
    agent any
 
    stages {
-stage('Run Tests') {
+      stage('Verify Branch') {
          steps {
-            bat(script: 'python ./tests/test_sample.py')
+            echo "$GIT_BRANCH"
+         }
+      }
+      stage('Docker Build') {
+         steps {
+            bat(script: 'docker compose build')
+         }
+      }
+      stage('Start App') {
+         steps {
+            bat(script: 'docker compose up -d')
+         }
+      }
+      stage('Run Tests') {
+         steps {
+            bat(script: 'pytest ./tests/test_sample.py')
          }
          post {
             success {
@@ -14,6 +29,24 @@ stage('Run Tests') {
                echo "Tests failed :("
             }
          }
+      }
+      stage('Docker Push') {
+         steps {
+            echo "Runnning in $WORKSPACE"
+            dir("$WORKSPACE/azure-vote") {
+               script {
+                  docker.withRegistry('', 'dockerhub') {
+                     def image = docker.build('blackdentech_jenkins:2023')
+                     image.push()
+                  }
+               }
+            }
+         }
+      }
+   }
+   post {
+      always {
+         bat(script: 'docker compose down')
       }
    }
 }

@@ -1,22 +1,14 @@
-pipeline {
-    agent any
+@Library('github.com/HamzaCrn/demo-shared-pipeline.git') _
 
-    stages {
-        stage('Hello') {
-            steps {
-                echo 'Hello World'
+pipeline {
+   agent any
+   stages {
+      stage('Call Library Function with an arguement') {
+         steps {
+            script {
+               helloWorld()
             }
-        }
-          stage('Goodbye') {
-            steps {
-                echo 'Goodbye World'
-            }
-        }
-           stage('Ok') {
-            steps {
-                sleep 5
-                echo 'Ok'
-            }
-        }
-    }
+         }
+      }
+   }
 }
